@@ -24,14 +24,29 @@ const getCommentsForEachPost = async (posts) => {
     postComments.forEach((comments, i) => posts[i].comments = comments);
 }
 
+const renderHtml = (user, post) => {
+    const content = document.getElementById('content');
+    content.innerHTML += `<h3> Post del usuario ${user.email}</h3>`;
+    
+    post.forEach(post => {
+        content.innerHTML += `
+        <div class="post">
+            <h4>${post.title}</h4>
+            <p>${post.body}</p>
+            <br>
+            ${post.comments.map(c => `<p><span>${c.email}:</span>${c.body}</p>`).join('')}
+        </div>
+        `;
+    })
+}
+
 const getBlogContent = async () => {
     try{
         const user = await getUser(1);
-        const posts = await getPosts(user);
-        await getCommentsForEachPost(posts);
+        const post = await getPosts(user);
+        await getCommentsForEachPost(post);
         
-        console.log(user);
-        console.log(posts);
+        renderHtml(user, post)
     }catch (err){
         console.log(err);
     }
